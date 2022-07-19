@@ -20,6 +20,7 @@ function Login() {
               placeholder="Enter your Email"
               value={values.email}
               onChange={handleChange}
+              required
             />
           </div>
           {error.emailError && <p>{error.emailError}</p>}
@@ -32,6 +33,7 @@ function Login() {
               placeholder="Enter your password"
               value={values.password}
               onChange={handleChange}
+              required
             />
           </div>
           {error.passwordError && <p>{error.passwordError}</p>}

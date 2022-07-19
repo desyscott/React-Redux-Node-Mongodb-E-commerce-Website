@@ -1,7 +1,7 @@
-const mongoose =require('mongoose')
+import mongoose from 'mongoose'
 
 const connectDB = async()=>{
-  try{
+  try{po
       const conn=await mongoose.connect(process.env.DATABASE_URL,{
         useNewUrlParser:true,
         useCreateIndex:true,
@@ -15,4 +15,4 @@ const connectDB = async()=>{
   
 }
 
-module.exports= connectDB;
+export default connectDB;

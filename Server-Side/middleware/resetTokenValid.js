@@ -1,9 +1,11 @@
-const authModel = require("../models/authModel");
-const resetPassword = require("../models/resetPasswordModel");
-const { isValidObjectId } = require("mongoose");
-const { sendError } = require("../utilitis/responseHandler");
+import authModel from "../models/authModel.js";
+import resetPassword from "../models/resetPasswordModel.js";
+import pkg from 'mongoose';
+import { sendError } from "../utilitis/responseHandler.js";
 
-exports.isResetTokenValid = async (req, res, next) => {
+const { isValidObjectId } = pkg;
+
+export const isResetTokenValid = async (req, res, next) => {
   const { uniqueToken, id } = req.query;
   if (!uniqueToken || !id) return sendError(res, "invalid  request");
 

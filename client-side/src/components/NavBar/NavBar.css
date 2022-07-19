@@ -1,0 +1,46 @@
+.header{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    flex-wrap: wrap;
+    align-items:center;
+    background-color: #203040;
+    height:60px;
+    width:100%;
+
+}
+
+.header a{
+    padding:1rem;
+}
+
+.nav-logo{
+font-weight: bold ;
+ text-transform:lowercase;
+ font-size:2rem;
+
+}
+.search_input{
+    /* width:700px;
+    padding:5px; */
+    /* outline:none; */
+}
+
+.nav-logo-link{
+    color:#fff;
+    text-decoration: none;
+}
+
+.nav-links{
+    display: flex;
+    /* gap:2rem; */
+}
+
+.badge{
+    background-color:#f02020;
+     color:#ffff;
+     border-radius:50%;
+     padding:0.2rem 0.7rem;
+     font-size:1.4rem;
+     margin-left:0.2rem;
+}

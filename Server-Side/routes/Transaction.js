@@ -1,6 +1,8 @@
-const express=require("express");
+import express from ("express");
+
 const router =express.Router()
-const transactionModel=require("../models/TransactionModel")
+
+const transactionModel=require("../models/TransactionModel.js")
 
 
 router.get("/",(req,res)=>{
@@ -8,4 +10,4 @@ router.get("/",(req,res)=>{
 })
 
 
-module.exports=router;
+export {router};

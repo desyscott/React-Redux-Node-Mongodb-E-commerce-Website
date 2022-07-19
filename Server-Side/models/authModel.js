@@ -1,33 +1,37 @@
-const mongoose = require("mongoose");
-const { isEmail } = require("validator");
-const bcrypt = require("bcrypt");
+import mongoose from "mongoose";
+import validator from 'validator';
+import bcrypt from "bcrypt";
 
+
+//schema define the field and data that will be saved in the mongodb database collection
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, "This filled is required"],
+    required: [true, "Enter your name"],
   },
   email: {
     type: String,
-    required: [true, "This filled is required"],
+    required: [true, "Enter your email"],
     unique: true,
-    validate: [isEmail, "Please enter a correct email"],
+    validate: [validator.isEmail, "Enter a correct email"],
   },
   password: {
     type: String,
-    required: [true, "This filled is required"],
-    minlength: [6, "It must be at least 6 characters long"],
+    required: [true, "Enter a password"],
+    minlength: [6, "Password must be at least 6 characters long"],
   },
   createdAt: {
     type: Date,
     default: Date.now(),
   },
-  verified: {
+  
+  verified:{
     type: Boolean,
     require: true,
     default: false,
   },
 });
+
 
 ///hashing the instance of the  password before it is save in the database
 userSchema.pre("save", async function (next) {
@@ -40,15 +44,16 @@ userSchema.pre("save", async function (next) {
   }
 });
 
+
 //logging  in with the new credentials
 userSchema.statics.login = async function (email, password) {
-  //used the email he enter to find the credentials of that user in the Database
+  //using the email enter to find the credentials of that user in the Database
   const user = await this.findOne({ email });
   // console.log(user);
   if (user) {
     if (user.verified) {
       const match = await bcrypt.compare(password, user.password);
-      console.log(match);
+      // console.log(match);
       if (match) {
         return user;
       }
@@ -58,6 +63,7 @@ userSchema.statics.login = async function (email, password) {
   }
   throw Error("incorrect email");
 };
+
 
 //comparing reset new password to old password
 userSchema.methods.comparePassword = async function (password) {
@@ -71,4 +77,4 @@ userSchema.methods.comparePassword = async function (password) {
   }
 };
 
-module.exports = mongoose.model("users", userSchema);
+export default mongoose.model("users", userSchema);

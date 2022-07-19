@@ -3,27 +3,31 @@ import { Link, Redirect, useHistory } from "react-router-dom";
 import axios from "axios";
 
 const Home = () => {
+     const history = useHistory();
   const [users, setUsers] = useState([]);
 
-  const history = useHistory();
   useEffect(() => {
     axios
       .get("/user1")
       .then((res) => {
         const data = res.data;
         setUsers(data.userList);
+        
         if (data === "there is no token") {
           history.replace("/login");
         }
+        
         if (data.error) {
           history.replace("/login");
         }
+        
       })
       .catch((err) => {
         console.log(err.message);
       });
   }, [history]);
 
+             
   const handleSignOut = () => {
     axios
       .get("auth/logout")

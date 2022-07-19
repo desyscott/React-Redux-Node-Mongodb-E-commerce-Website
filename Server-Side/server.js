@@ -1,17 +1,18 @@
-const express = require("express");
-const colors = require("colors");
-const dotenv = require("dotenv");
-const cors = require("cors");
-const morgan = require("morgan");
-const cookieParser = require("cookie-parser");
+import  express from "express";
+import colors  from "colors";
+import dotenv  from "dotenv";
+import cors  from "cors";
+import morgan  from "morgan";
+import cookieParser  from "cookie-parser";
 
 const app = express();
 
-const { authMiddleware } = require("./middleware/authMiddleware.js");
+import {data} from './data/ProductData.js'
+import {requireAuth,authCurrentUser}  from "./middleware/authMiddleware.js";
 
-const authRoute = require("./routes/authRoute");
+import authRoute  from "./routes/authRoute.js";
 
-const connectDB = require("./db");
+import connectDB  from "./db.js";
 
 dotenv.config();
 connectDB();
@@ -23,11 +24,26 @@ app.use(morgan("dev"));
 app.use(cors());
 
 //always the first parameter is the req
-app.get("/user1", authMiddleware, (req, res) => {
+app.get("/user1", requireAuth, (req, res) => {
   res.json({
     userList: ["des", "desmond", "essuman", "alice"],
   });
 });
+
+app.get("/api/products/:id",(req, res) => {
+  const product = data.productData.find(x=>x._id === req.params.id )
+  if(product){
+    res.send(product)
+  }else{
+    res.status(404).send({message:"Product Not Found"})
+  }
+});
+
+app.get("/api/products",  (req, res) => {
+  res.json(data.productData);
+});
+
+
 
 app.use("/auth", authRoute);
 

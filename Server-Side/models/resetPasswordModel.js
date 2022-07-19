@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const resetPassword = new mongoose.Schema({
   userId: {
@@ -38,4 +38,4 @@ resetPassword.methods.compareUniqueToken = async function (uniqueToken) {
   console.log(`uniqueToken is verified : ${result} `);
 };
 
-module.exports = mongoose.model("resetPassword", resetPassword);
+export default mongoose.model("resetPassword", resetPassword);

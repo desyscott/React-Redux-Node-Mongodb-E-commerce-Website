@@ -1,20 +1,22 @@
-const express = require("express");
-const jwt = require("jsonwebtoken");
-const { v4: uuidv4 } = require("uuid");
-const { isValidObjectId } = require("mongoose");
+import express from "express";
+import jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from 'uuid';
+import pkg from "mongoose";
 
 const router = express.Router();
+const { isValidObjectId } = pkg;
 
-const authModel = require("../models/authModel");
-const userEmailConfirmation = require("../models/userEmailConfirmation");
-const resetPassword = require("../models/resetPasswordModel");
-const { isResetTokenValid } = require("../middleware/resetTokenValid");
-const { mailTransport } = require("../utilitis/Mail");
-const { sendError } = require("../utilitis/responseHandler");
+import authModel from "../models/authModel.js";
+import userEmailConfirmation from "../models/userEmailConfirmation.js";
+import resetPassword from "../models/resetPasswordModel.js";
+import { isResetTokenValid } from "../middleware/resetTokenValid.js";
+import { mailTransport } from "../utilitis/Mail.js";
+import { sendError } from "../utilitis/responseHandler.js";
+
 
 const handleErrors = (err) => {
   console.log(err.message, err.code);
-  let errors = {
+     let errors= {
     name: "",
     email: "",
     password: "",
@@ -39,28 +41,32 @@ const handleErrors = (err) => {
     return errors;
   }
 
+//email not verify error
   if (err.message === "Email has not been verified check your inbox") {
     errors.emailVerifyMessage = "Email has not been verified check your inbox";
     return errors;
   }
 
-  // validation errors
+  // signup validation errors
   if (err.message.includes("users validation failed")) {
+    // console.error(err)
+    // console.error(Object.values(err.errors))
     Object.values(err.errors).forEach(({ properties }) => {
       errors[properties.path] = properties.message;
     });
   }
-
   return errors;
 };
 
-// create json web token
+
+// create json web token which expire in 3 days
 const maxAge = 3 * 24 * 60 * 60;
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_KEY, {
     expiresIn: maxAge,
   });
 };
+
 
 router.post("/signUp", async (req, res) => {
   const { name, email, password } = req.body;
@@ -70,16 +76,20 @@ router.post("/signUp", async (req, res) => {
       email,
       password,
     });
+    
+        //sending the jwt cookie to user browser when sign out
     const token = createToken(user._id);
     res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
-    const uniqueString = uuidv4() + user._id;
+    
+    const verificationString = uuidv4() + user._id;
     const verifyUserEmail = userEmailConfirmation.create({
       userId: user._id,
-      uniqueString: uniqueString,
+      verificationString:verificationString,
     });
-
-    mailTransport().sendMail({
-      from: process.env.AUTH_EMAIL,
+    
+    //sending an email
+    mailTransport().sendMail({ 
+      from: process.env.AUTH_EMAIL, 
       to: user.email,
       subject: "verify your account",
       html: `<h1>welcome to Shop Now!!!! ${user.name}</h1>
@@ -91,41 +101,46 @@ router.post("/signUp", async (req, res) => {
         "/email-verification/" +
         user._id +
         "/" +
-        uniqueString
+        verificationString 
       }>confirm email</a>
       <p>This link will expire in 1hour. If you have questions, <a>we’re here to help.</a></p>`,
     });
+    
     res.status(201).json({ user: user });
+    
   } catch (err) {
-    const errors = handleErrors(err);
+  const errors = handleErrors(err);
     res.json({ errors });
   }
 });
 
-router.get("/email-verification/:userId/:uniqueString", async (req, res) => {
-  const { userId, uniqueString } = req.params;
-  if (!userId || !uniqueString)
+
+router.get("/email-verification/:userId/:verificationString", async (req, res) => {
+  const { userId, verificationString} = req.params;
+  
+  if (!userId || !verificationString)
     return sendError(res, "invalid request,missing parameters");
 
+   //checking if id is valid mongoDB id
   if (!isValidObjectId(userId))
-    return sendError(res, "invalid request,missing parameters");
+  return sendError(res, "invalid request,missing parameters");
 
   const user = await authModel.findById(userId);
   if (!user) return sendError(res, "sorry user not found");
 
-  if (user.verified) return sendError(res, "user has already been verified");
+  if (user.verified) return sendError(res, "This account is already been verified");
 
   const userToken = await userEmailConfirmation.findOne({ userId: user._id });
   if (!userToken)
     return sendError(res, "The email verification link is invalid");
 
-  const verifyUniqueString = await userToken.verifyUniqueString(uniqueString);
+  const verifyUniqueString = await userToken.verifyUniqueString(verificationString);
   if (!verifyUniqueString)
     return sendError(res, "The email verification link is invalid ");
 
-  await userEmailConfirmation.findByIdAndDelete(userToken._id);
-
   await authModel.updateOne({ _id: user._id }, { verified: true });
+  
+   await userEmailConfirmation.findByIdAndDelete(userToken._id);
 
   mailTransport().sendMail({
     from: process.env.AUTH_EMAIL,
@@ -135,21 +150,24 @@ router.get("/email-verification/:userId/:uniqueString", async (req, res) => {
   });
 
   res.json("your email is verified");
-
-  console.log("your email is verified");
+  // console.log("your email is verified");
 });
+
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
-  if (!email) return sendError(res, "email filed must not be empty");
+  if (!email) return sendError(res, "Enter your email");
 
-  if (!password) return sendError(res, "password filed must not be empty");
+  if (!password) return sendError(res, "Enter your password");
 
   try {
     const user = await authModel.login(email, password);
+
+    //sending the jwt cookie to user browser when sign in
     const token = createToken(user._id);
     res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+    
     res.status(200).json({ user: user._id });
   } catch (err) {
     const errors = handleErrors(err);
@@ -157,15 +175,19 @@ router.post("/login", async (req, res) => {
   }
 });
 
+
 router.get("/logout", (req, res) => {
+  
+   //sending the jwt cookie to user browser when logout which expire in 1minute
   res.cookie("jwt", "", { maxAge: 1 });
   res.status(200).json("logout successful");
 });
 
+
 router.post("/forget-password", async (req, res) => {
   const { email } = req.body;
   // res.json(req.body);
-  if (!email) return sendError(res, "please provide a valid user");
+  if (!email) return sendError(res, "Enter your email");
 
   const user = await authModel.findOne({ email });
   if (!user) return sendError(res, "sorry user not found");
@@ -199,8 +221,9 @@ router.post("/forget-password", async (req, res) => {
     
       <p>If you don't want to reset your credentials, just ignore this message and nothing will be changed</p>`,
   });
-  res.json("password reset link as been sent Successfully");
+  res.status(200).json("password reset link as been sent Successfully");
 });
+
 
 router.post("/reset-password", isResetTokenValid, async (req, res) => {
   const { password } = req.body;
@@ -227,8 +250,10 @@ router.post("/reset-password", isResetTokenValid, async (req, res) => {
   res.send({ success: true, message: "password reset successful" });
 });
 
+
 router.get("/verify-resetToken", isResetTokenValid, (req, res) => {
-  res.json({ success: true });
+  res.status(200).json({ success: true });
 });
 
-module.exports = router;
+
+export default router;

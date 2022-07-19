@@ -3,6 +3,7 @@ import axios from "axios";
 import { useHistory } from "react-router-dom";
 
 const LoginUseForm = () => {
+  const history = useHistory();
   const [values, setValues] = useState({
     email: "",
     password: "",
@@ -18,7 +19,7 @@ const LoginUseForm = () => {
     });
   };
 
-  const history = useHistory();
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -33,7 +34,7 @@ const LoginUseForm = () => {
       .post("/auth/login", { email, password })
       .then((res) => {
         const data = res.data;
-        console.log(data);
+        console.log( "data",data);
 
         if (data.errors) {
           const { email, password, emailVerifyMessage } = data.errors;
@@ -45,13 +46,14 @@ const LoginUseForm = () => {
         }
 
         if (data.user) {
-          history.replace("/home");
+          history.replace("/home"); 
         }
+        
       })
       .catch((err) => {
         if (err?.response?.data) {
           const { data } = err.response;
-          console.log(data.error);
+          console.log("data.error",data.error);
         }
       });
   };

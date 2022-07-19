@@ -1,6 +1,6 @@
-const express = require("express");
+import express from "express";
 
-const router = express.Router;
+const router = express.Router();
 
 router.get("/user1", (req, res) => {
   res.json({
@@ -8,4 +8,4 @@ router.get("/user1", (req, res) => {
   });
 });
 
-module.exports = router;
+export {router}

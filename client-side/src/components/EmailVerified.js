@@ -2,15 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 
-function EmailVerified() {
+const EmailVerified=()=>{
   const [validUrl, setValidUrl] = useState(false);
   const [busy, setBusy] = useState(true);
+  
   const params = useParams();
 
   const verifyEmail = async () => {
     try {
       const { data } = await axios.get(
-        `/auth/email-verification/${params.userId}/${params.uniqueString}`
+        `/auth/email-verification/${params.userId}/${params.verificationString}`
       );
       setBusy(false);
       console.log(data);
@@ -39,6 +40,7 @@ function EmailVerified() {
       </div>
     );
   }
+  
   if (validUrl) {
     return (
       <div>

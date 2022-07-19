@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const userEmailConfirmation = new mongoose.Schema({
   userId: {
@@ -7,10 +7,12 @@ const userEmailConfirmation = new mongoose.Schema({
     require: true,
     ref: "users",
   },
-  uniqueString: {
+  
+  verificationString: {
     type: String,
     require: true,
   },
+  
   createdAt: {
     type: Date,
     expires: 3600,
@@ -18,26 +20,26 @@ const userEmailConfirmation = new mongoose.Schema({
   },
 });
 
+//we hash the verification string prior to storing it
 userEmailConfirmation.pre("save", async function (next) {
   try {
-    console.log(this.uniqueString);
+    console.log(this.verificationString);
     const salt = await bcrypt.genSalt();
-    this.uniqueString = await bcrypt.hash(this.uniqueString, salt);
+    this.verificationString= await bcrypt.hash(this.verificationString, salt);
     next();
   } catch (error) {
     console.log(error.message);
   }
 });
 
-userEmailConfirmation.methods.verifyUniqueString = async function (
-  uniqueString
-) {
-  const result = await bcrypt.compare(uniqueString, this.uniqueString);
-
+// verify the verification string when the user click on it
+userEmailConfirmation.methods.verifyUniqueString = async function (verificationString) {
+  const result = await bcrypt.compare(verificationString, this.verificationString);
   if (result) {
     return result;
   }
-  console.log(`uniqueString is verified : ${result} `);
+  console.log(`verificationString is verified : ${result} `);
 };
 
-module.exports = mongoose.model("userEmailConfirmation", userEmailConfirmation);
+
+export default mongoose.model("userEmailConfirmation", userEmailConfirmation);

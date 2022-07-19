@@ -4,6 +4,7 @@ import axios from "axios";
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
+  const [error, setError]= useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -19,6 +20,7 @@ function ForgotPassword() {
         if (err?.response?.data) {
           const { data } = err.response;
           console.log(data);
+          setError(data.error)
         }
         console.log(err.message);
       });
@@ -41,6 +43,7 @@ function ForgotPassword() {
                 setEmail(e.target.value);
               }}
             />
+            {error && <p>{error}</p>}
           </div>
           <button type="submit">submit</button>
         </form>
