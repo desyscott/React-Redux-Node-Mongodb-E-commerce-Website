@@ -31,7 +31,7 @@ const LoginUseForm = () => {
     });
 
     axios
-      .post("/auth/login", { email, password })
+      .post("/api/auth/signin", { email, password })
       .then((res) => {
         const data = res.data;
         console.log( "data",data);
@@ -45,7 +45,7 @@ const LoginUseForm = () => {
           });
         }
 
-        if (data.user) {
+        if (data.id) {
           history.replace("/home"); 
         }
         

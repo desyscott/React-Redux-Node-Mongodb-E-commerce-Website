@@ -1,9 +1,27 @@
+import bcrypt from "bcrypt";
 
+
+const salt = await bcrypt.genSalt();
 export const data ={
-productData:[
+    
+    users:[
+        {
+            name:"Desmond",
+            email:"mrfallback055@gmail.com",
+            password:bcrypt.hashSync("desy53t3",salt),
+            isAdmin:true
+        },
+        {
+            name:"Mike",
+            email:"desyscott055@gmail.com",
+            password:bcrypt.hashSync("desy3123",salt),
+            isAdmin:false
+        },
+          ],
+products:[
     {
-        _id:"1",
-        img:"/images/img1.jpg",
+     
+        image:"/images/img1.jpg",
         name:"Nike shirt",
         price:61.00,
         description:"This is a quality product",
@@ -15,8 +33,8 @@ productData:[
     },
     
     {
-        _id:"2",
-        img:"/images/img4.jpg",
+       
+        image:"/images/img4.jpg",
         name:"lacoste shirts",
         price:40,
         description:"This is a quality product",
@@ -28,8 +46,8 @@ productData:[
     },
     
     {
-        _id:"3",
-        img:"/images/img10.jpg",
+      
+        image:"/images/img10.jpg",
         name:"adidas shirt",
         price:100,
         description:"This is a quality product",
@@ -40,8 +58,8 @@ productData:[
      
     },
     {
-        _id:"4",
-        img:"/images/img5.jpeg",
+        
+        image:"/images/img5.jpeg",
         name:"hawaiin shirt",
         price:40,
         description:"This is a quality product",
@@ -52,8 +70,8 @@ productData:[
      
     },
     {
-        _id:"5",
-        img:"/images/img2.jpg",
+    
+        image:"/images/img2.jpg",
         name:"suit",
         price:160,
         description:"This is a quality product",
@@ -64,8 +82,8 @@ productData:[
      
     },
     {
-        _id:"6",
-        img:"/images/img6.jpg",
+      
+        image:"/images/img6.jpg",
         name:"sleeve shirt",
         price:40,
         description:"This is a quality product",
@@ -75,9 +93,9 @@ productData:[
         countInStock:20
     },
     {
-        _id:"7",
-        img:"/images/img7.png",
-        name:"tomford",
+        
+        image:"/images/img7.png",
+        name:"tomford shirt",
         price:470,
         description:"This is a quality product",
         rating:.5,
@@ -86,9 +104,9 @@ productData:[
         countInStock:2
     },
     {
-        _id:"8",
-        img:"/images/suit.jpg",
-        name:"tomford",
+   
+        image:"/images/suit.jpg",
+        name:"tomford suit",
         price:470,
         description:"This is a quality product",
         rating:1,

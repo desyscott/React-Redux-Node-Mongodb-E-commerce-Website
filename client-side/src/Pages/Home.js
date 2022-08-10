@@ -30,11 +30,11 @@ const Home = () => {
              
   const handleSignOut = () => {
     axios
-      .get("auth/logout")
+      .get("/api/auth/logout")
       .then((res) => {
         const data = res.data;
         console.log(data);
-        history.replace("/login");
+        history.replace("/signin");
       })
       .catch((err) => {
         console.log(err);
@@ -44,7 +44,7 @@ const Home = () => {
   return (
     <div>
       <p>Home</p>
-      {users && users.map((user) => <li>{user}</li>)}
+      {users && users.map((user,index) => <li key={index}>{user}</li>)}
 
       <button onClick={handleSignOut}>logout</button>
     </div>

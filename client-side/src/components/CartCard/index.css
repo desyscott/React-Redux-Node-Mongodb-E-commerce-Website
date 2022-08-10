@@ -1,0 +1,16 @@
+.row{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:center;
+    width:100%;  
+}
+
+.small{
+    max-width:7rem;
+    width:100%;  
+}
+
+.min-30{
+    max-width:30rem;
+}

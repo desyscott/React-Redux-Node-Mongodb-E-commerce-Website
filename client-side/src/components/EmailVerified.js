@@ -11,7 +11,7 @@ const EmailVerified=()=>{
   const verifyEmail = async () => {
     try {
       const { data } = await axios.get(
-        `/auth/email-verification/${params.userId}/${params.verificationString}`
+        `/api/auth/email-verification/${params.userId}/${params.verificationString}`
       );
       setBusy(false);
       console.log(data);
@@ -52,7 +52,7 @@ const EmailVerified=()=>{
   return (
     <div>
       <p>successfully verified your email you can login</p>
-      <Link to="/login">login</Link>
+      <Link to="/signin">login</Link>
     </div>
   );
 }

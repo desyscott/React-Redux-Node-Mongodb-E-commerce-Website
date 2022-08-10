@@ -15,10 +15,10 @@ const useForm = () => {
   const [userVerificationMessage, setUserVerificationMessage] = useState({});
 
   const handleChange = (e) => {
-    // const {name,value}=e.target
+    const {name,value}=e.target
     setValues({
       ...values,
-      [e.target.name]: e.target.value,
+      [name]:value,
     });
   };
 
@@ -30,25 +30,17 @@ const useForm = () => {
       emailError: "",
       passwordError: "",
     });
+    
     axios
-      .post("/auth/signUp", {
+      .post("/api/auth/signup", {
         name: values.name,
         email: values.email,
         password: values.password,
       })
-      .then((res) => {
+      .then(res => {
         const data = res.data;
-        console.log("data",data);
+        console.log(data);
         
-        
-        console.log("errors",data.errors);
-        if (data.errors) {
-          setError({
-            nameError: data.errors.name,
-            emailError: data.errors.email,
-            passwordError: data.errors.password,
-          });
-        }
         if (!data.user.verified) {
           setUserVerificationMessage({
             verifyMessage:
@@ -56,14 +48,23 @@ const useForm = () => {
           });
         }
         
+        
+        if (data.errors) {
+          setError({
+            nameError: data.errors.name,
+            emailError: data.errors.email,
+            passwordError: data.errors.password,
+          });
+        }
+        
+       
       
       })
       .catch((err) => {
-        console.log("err message",err.message);
+        console.log("err message",err);
       });
   };
-  return { handleChange, values, handleSubmit, error, userVerificationMessage };
+  return { handleChange,values,handleSubmit,error,userVerificationMessage};
 };
-
 
 export default useForm;

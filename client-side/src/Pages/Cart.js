@@ -1,8 +1,11 @@
 import React from 'react'
+import CardCart from "../components/CartCard/index"
 
 const Cart=()=>{
   return (
-    <div>Cart</div>
+    <div>
+    <CardCart/>
+    </div>
   )
 }
 

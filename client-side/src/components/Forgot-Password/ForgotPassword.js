@@ -9,7 +9,7 @@ function ForgotPassword() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("/auth/forget-password", { email })
+      .post("/api/auth/forget-password", { email })
       .then((res) => {
         const data = res.data;
         if (data) {

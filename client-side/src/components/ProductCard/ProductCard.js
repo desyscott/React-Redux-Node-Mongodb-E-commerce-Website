@@ -53,7 +53,7 @@ const ProductCard=()=> {
        <Link to ="/">Back to Results</Link>
          <div className="row top">
           <div className="col-1">
-            <img  className="large" src={product.img} alt={product.name}/>
+            <img  className="large" src={product.image} alt={product.name}/>
             
         </div>
           

@@ -12,7 +12,7 @@ const NavBar =()=>{
     return(
         <div className="header">
    <div className="nav-logo">
-   <Link to="/" className="nav-logo-link">Scotty</Link>
+   <Link to="/" className="nav-logo-link">Scottex</Link>
    </div>
    
    <div>

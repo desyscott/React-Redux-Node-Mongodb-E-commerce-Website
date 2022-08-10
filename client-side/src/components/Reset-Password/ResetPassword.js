@@ -23,7 +23,7 @@ function ResetPassword() {
     // console.log(uniqueToken);
     try {
       const { data } = await axios.get(
-        `http://localhost:5000/auth/verify-resetToken?uniqueToken=${uniqueToken}&id=${id}`
+        `http://localhost:5000/api/auth/verify-resetToken?uniqueToken=${uniqueToken}&id=${id}`
       );
       // console.log(data);
       setBusy(false);
@@ -66,7 +66,7 @@ function ResetPassword() {
     try {
       setBusy(true);
       const { data } = await axios.post(
-        `/auth/reset-password?uniqueToken=${uniqueToken}&id=${id}`,
+        `/api/auth/reset-password?uniqueToken=${uniqueToken}&id=${id}`,
         { password }
       );
       // console.log(data);

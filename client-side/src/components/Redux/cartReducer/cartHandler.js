@@ -4,7 +4,6 @@ export const existingCartItem=({prevCartItem,nextCartItem}) =>{
     return prevCartItem.find(cartItem=>cartItem.product===nextCartItem.product)
 }
 
-
 export const handleAddToCart=({prevCartItem,nextCartItem})=>{
      
 //if the item to be added to the cart already exist we just replace it with new one
@@ -21,4 +20,10 @@ export const handleAddToCart=({prevCartItem,nextCartItem})=>{
       ...prevCartItem, 
         nextCartItem,
         ]
+}
+
+
+export const handleRemoveFromCart=({prevCartItem,cartItemToRemove})=>{
+    //filter out the product whose id is equal to the payLoad action id
+    return prevCartItem.filter(cartItem => cartItem.product !== cartItemToRemove.productId)
 }

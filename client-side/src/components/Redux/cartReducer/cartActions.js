@@ -11,7 +11,7 @@ export const addCartItem=(productId,qty)=>async(dispatch,getState)=>{
        type:cartTypes.ADD_TO_CART,
        payLoad:{
            name:data.name,
-           img:data.img,
+           image:data.image,
            price:data.price,
            countInStock:data.countInStock,
            product:data._id,
@@ -27,4 +27,15 @@ export const addCartItem=(productId,qty)=>async(dispatch,getState)=>{
     }
     
     
+}
+
+
+export const removeCartItem=(productId)=>async(dispatch,getState)=>{
+    dispatch({
+        type:cartTypes.REMOVE_CART_ITEM,
+        payLoad:productId
+         });
+    
+    //updating the local storage 
+    localStorage.setItem("cartItems", JSON.stringify(getState().cartData.cartItems));
 }

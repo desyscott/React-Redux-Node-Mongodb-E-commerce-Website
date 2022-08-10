@@ -1,9 +1,10 @@
 import express from "express";
-import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
 import pkg from "mongoose";
+import asyncHandler from "express-async-handler"
 
 const router = express.Router();
+
 const { isValidObjectId } = pkg;
 
 import authModel from "../models/authModel.js";
@@ -12,6 +13,11 @@ import resetPassword from "../models/resetPasswordModel.js";
 import { isResetTokenValid } from "../middleware/resetTokenValid.js";
 import { mailTransport } from "../utilitis/Mail.js";
 import { sendError } from "../utilitis/responseHandler.js";
+import {createToken} from "../utilitis/generateToken.js"
+import {data} from "../data/ProductData.js"
+
+
+
 
 
 const handleErrors = (err) => {
@@ -59,16 +65,15 @@ const handleErrors = (err) => {
 };
 
 
-// create json web token which expire in 3 days
-const maxAge = 3 * 24 * 60 * 60;
-const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_KEY, {
-    expiresIn: maxAge,
-  });
-};
 
 
-router.post("/signUp", async (req, res) => {
+router.get("/seed",asyncHandler(async(req,res)=>{
+  const userCred = await authModel.insertMany(data.users);
+  res.send({userCred});
+}))
+
+
+router.post("/signup", async (req, res) => {
   const { name, email, password } = req.body;
   try {
     const user = await authModel.create({
@@ -77,7 +82,8 @@ router.post("/signUp", async (req, res) => {
       password,
     });
     
-        //sending the jwt cookie to user browser when sign out
+    //sending the jwt cookie to user browser when sign out
+    const maxAge= 3*24*60*60;
     const token = createToken(user._id);
     res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
     
@@ -86,7 +92,6 @@ router.post("/signUp", async (req, res) => {
       userId: user._id,
       verificationString:verificationString,
     });
-    
     //sending an email
     mailTransport().sendMail({ 
       from: process.env.AUTH_EMAIL, 
@@ -107,6 +112,7 @@ router.post("/signUp", async (req, res) => {
     });
     
     res.status(201).json({ user: user });
+    console.log(user)
     
   } catch (err) {
   const errors = handleErrors(err);
@@ -154,7 +160,7 @@ router.get("/email-verification/:userId/:verificationString", async (req, res) =
 });
 
 
-router.post("/login", async (req, res) => {
+router.post("/signin",asyncHandler(async(req, res) => {
   const { email, password } = req.body;
 
   if (!email) return sendError(res, "Enter your email");
@@ -163,21 +169,24 @@ router.post("/login", async (req, res) => {
 
   try {
     const user = await authModel.login(email, password);
-
     //sending the jwt cookie to user browser when sign in
+    const maxAge= 3*24*60*60;
     const token = createToken(user._id);
     res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
     
-    res.status(200).json({ user: user._id });
+    res.status(200).send({ id:user._id,
+                           name:user.name,
+                           email:user.email,
+                           isAdmin:user.isAdmin,
+                           verified:user.verified});
   } catch (err) {
     const errors = handleErrors(err);
     res.json({ errors });
   }
-});
+}));
 
 
 router.get("/logout", (req, res) => {
-  
    //sending the jwt cookie to user browser when logout which expire in 1minute
   res.cookie("jwt", "", { maxAge: 1 });
   res.status(200).json("logout successful");

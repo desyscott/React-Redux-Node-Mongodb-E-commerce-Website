@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 
 const connectDB = async()=>{
-  try{po
+  try{
       const conn=await mongoose.connect(process.env.DATABASE_URL,{
         useNewUrlParser:true,
         useCreateIndex:true,
