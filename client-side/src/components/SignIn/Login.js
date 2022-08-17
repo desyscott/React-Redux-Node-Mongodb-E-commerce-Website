@@ -1,12 +1,37 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React,{useEffect,useRef} from "react";
+import { Link,useHistory,useLocation} from "react-router-dom";
+import {useSelector} from "react-redux"
 import loginUseForm from "./loginUseForm";
 import "./signIn.css"
+import LoadingBox from "../LoadingBox";
 
+const mapState=({userData})=>({
+  currentUser:userData.currentUser,
+  signInError:userData.signInErrors,
+  loading:userData.loading,
+  
+})
 
 function Login() {
-  const { handleChange, values, handleSubmit, error } = loginUseForm();
-
+  const {currentUser,loading,signInError}=useSelector(mapState);
+  const inputRef=useRef()
+  const location=useLocation()
+  const history=useHistory()
+  
+  const redirect = location.search ? location.search.split("=")[1]:"/";
+  
+  const { handleChange, values, handleSubmit} = loginUseForm();
+  
+  useEffect(()=>{
+    if(currentUser){
+     history.push(redirect);
+    }
+  },[history,redirect,currentUser])
+  
+  useEffect(()=>{
+    inputRef.current.focus();
+  },[])
+ 
   return (
     <>
       <div>
@@ -14,10 +39,12 @@ function Login() {
            <div>
           <h1>Sign In</h1>
           </div>
-          {error.emailVerifyMessage && <p>{error.emailVerifyMessage}</p>}
+          
+          {signInError && <p>{signInError.emailVerifyMessage}</p>}
           <div>
             <label htmlFor="email">Email</label>
             <input
+              ref={inputRef}
               type="email"
               id="email"
               name="email"
@@ -28,7 +55,7 @@ function Login() {
              
             />
           </div>
-          {error.emailError && <p>{error.emailError}</p>}
+          { signInError && <p>{ signInError.email}</p>}
           <div>
             <label htmlFor="password">Password</label>
             <input
@@ -41,7 +68,7 @@ function Login() {
               onChange={handleChange}
             />
           </div>
-          {error.passwordError && <p>{error.passwordError}</p>}
+          { signInError && <p>{ signInError.password}</p>}
           <div>
              <div>
             <Link to="/forgot-password">Forget password ?</Link>
@@ -49,13 +76,13 @@ function Login() {
           </div>
            <div>
             <label/>
-            <button type="submit">Sign In</button>
+            <button type="submit">{loading ?<LoadingBox/>:<>Sign In</>}</button>
            </div>
           <div>
           <label/>
             <div>
             Don't have an account? {' '} 
-            <Link to="/signUp">create your account</Link>
+            <Link to={`/signUp?redirect=${redirect}`}>create your account</Link>
             </div>
           </div>
         </form>

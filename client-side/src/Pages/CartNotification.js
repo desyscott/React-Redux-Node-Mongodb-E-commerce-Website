@@ -1,7 +1,7 @@
 import React,{useEffect} from 'react'
 import {useParams,useLocation} from 'react-router-dom'
 import {useDispatch} from "react-redux"
-import { addCartItem } from './../components/Redux/cartReducer/cartActions';
+import { addCartItem } from './../components/Redux/Reducers/cartReducer/cartActions';
 
 function CartNotification(props) {
   const dispatch = useDispatch()

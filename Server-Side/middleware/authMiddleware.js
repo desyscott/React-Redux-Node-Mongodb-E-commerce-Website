@@ -1,8 +1,6 @@
 import  jwt from "jsonwebtoken";
-import authModel from "../models/authModel.js"
 
 const requireAuth = (req, res, next) => {
-  
   //request the jwt from the user browser
   const token = req.cookies.jwt;
 

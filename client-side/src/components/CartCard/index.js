@@ -2,15 +2,15 @@ import React from 'react'
 import {useSelector,useDispatch} from "react-redux"
 import { Link,useHistory } from 'react-router-dom'
 import MessageBox from '../MessageBox'
-import { addCartItem,removeCartItem } from '../Redux/cartReducer/cartActions'
+import { addCartItem,removeCartItem } from '../Redux/Reducers/cartReducer/cartActions'
 import {createStructuredSelector} from "reselect"
-import { selectCartItems, selectCartItemCount, selectCartTotalAmount  } from '../Redux/cartReducer/cartUtils'
+import { selectCartItems, selectCartItemCount, selectCartTotalAmount  } from '../Redux/Reducers/cartReducer/cartUtils'
 import "./index.css"
 
 
  const mapState=createStructuredSelector({
    cartItems:selectCartItems,
-   totalItems: selectCartItemCount ,
+   totalItems: selectCartItemCount,
    totalAmount:selectCartTotalAmount
    })
 
@@ -25,7 +25,7 @@ const CartCard=()=>{
   }
   
   const checkOutHandler=()=>{
-    history.push("/signUp?redirect=shipping");
+    history.push("/signIn?redirect=shipping");
   }
   
   return (
@@ -34,7 +34,6 @@ const CartCard=()=>{
     
     <div className="col-2">
     <h1>Shopping Cart</h1>
-   
     {cartItems.length === 0?
      (
        <MessageBox>

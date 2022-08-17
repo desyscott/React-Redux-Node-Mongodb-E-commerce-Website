@@ -37,8 +37,9 @@ export const fetchProductRequest =(productId)=>async(dispatch)=>{
     }catch(err){
         dispatch({
             type:productTypes.FETCH_PRODUCT_FAIL,
-            payLoad:err.response && err.response.data.message ?
-            err.response.data.message: err.message,
+            payLoad:err.response && err.response.data.message
+             ? err.response.data.message 
+             : err.message,
         })
     }
 }

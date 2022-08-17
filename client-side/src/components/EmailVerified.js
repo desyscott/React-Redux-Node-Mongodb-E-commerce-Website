@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams,useLocation } from "react-router-dom";
 import axios from "axios";
 
 const EmailVerified=()=>{
+  const location=useLocation()
+  
   const [validUrl, setValidUrl] = useState(false);
   const [busy, setBusy] = useState(true);
-  
+  const redirect = location.search ? location.search.split("=")[1]:"/";
   const params = useParams();
 
   const verifyEmail = async () => {
@@ -52,7 +54,7 @@ const EmailVerified=()=>{
   return (
     <div>
       <p>successfully verified your email you can login</p>
-      <Link to="/signin">login</Link>
+      <Link to={`/signin?redirect=${redirect}`}>login</Link>
     </div>
   );
 }

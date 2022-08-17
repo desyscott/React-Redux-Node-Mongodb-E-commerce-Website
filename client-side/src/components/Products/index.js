@@ -1,7 +1,7 @@
 import React,{useEffect} from 'react'
 import {useSelector,useDispatch} from "react-redux"
 import Product from "./Product/index"
-import {fetchProductsRequest} from "../Redux/productReducer/productActions"
+import {fetchProductsRequest} from "../Redux/Reducers/productReducer/productActions"
 import "./index.css"
 import CardSkeleton from '../CardSkeleton'
 import MessageBox from "../MessageBox/index"

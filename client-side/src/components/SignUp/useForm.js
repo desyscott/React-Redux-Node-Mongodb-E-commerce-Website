@@ -1,14 +1,16 @@
 import { useState } from "react";
-import axios from "axios";
-import { useHistory } from "react-router-dom";
+import {useDispatch} from "react-redux"
+import {signup} from "../Redux/Reducers/userReducer/userActions"
+import axios from "axios"
+
 
 const useForm = () => {
-    const history = useHistory();
-
+  const dispatch= useDispatch()
   const [values, setValues] = useState({
     name: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
 
   const [error, setError] = useState({});
@@ -24,45 +26,60 @@ const useForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const {name,email,password,confirmPassword}=values;
 
-    setError({
-      nameError: "",
-      emailError: "",
-      passwordError: "",
-    });
+    // setError({
+    //   nameError: "",
+    //   emailError: "",
+    //   passwordError: "",
+    // });
     
-    axios
-      .post("/api/auth/signup", {
-        name: values.name,
-        email: values.email,
-        password: values.password,
-      })
-      .then(res => {
-        const data = res.data;
-        console.log(data);
+    // axios
+    //   .post("/api/auth/signup", {
+    //     name: values.name,
+    //     email: values.email,
+    //     password: values.password,
+    //   })
+    //   .then(res => {
+    //     const data = res.data;
+    //     console.log(data);
         
-        if (!data.user.verified) {
-          setUserVerificationMessage({
-            verifyMessage:
-              "Confirmation message has been sent to your inbox please check and verify your email",
-          });
-        }
+    //     if(!data.user.verified){
+    //       setUserVerificationMessage({
+    //         verifyMessage:
+    //           "Confirmation message has been sent to your inbox please check and verify your email",
+    //       });
+    //     }
         
         
-        if (data.errors) {
-          setError({
-            nameError: data.errors.name,
-            emailError: data.errors.email,
-            passwordError: data.errors.password,
-          });
-        }
+    //     if(data.errors){
+    //       // const {email,name,password}=data.errors;
+    //       // console.log("data.errors",password)
+    //       console.log("data.errors",data.errors)
+    //       // setError({
+    //       //   nameError: data.errors.name,
+    //       //   emailError: data.errors.email,
+    //       //   passwordError: data.errors.password,
+    //       // });
+         
+    //     }
         
        
       
-      })
-      .catch((err) => {
-        console.log("err message",err);
-      });
+    //   })
+    //   .catch((err) => {
+    //     if(err?.response?.data){
+    //       const {data}=err?.response
+    //       console.log("err message",data);
+    //     }
+      
+    //   });
+    if(password !== confirmPassword){
+      alert("password and confirm password do not match")
+    }else{
+      dispatch(signup(name,email,password));
+    }
+ 
   };
   return { handleChange,values,handleSubmit,error,userVerificationMessage};
 };

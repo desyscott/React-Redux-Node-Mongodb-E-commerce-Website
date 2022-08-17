@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from 'react'
 import {useParams,useHistory,Link} from "react-router-dom"
 import {useSelector,useDispatch} from "react-redux"
-import {fetchProductRequest} from "../Redux/productReducer/productActions"
+import {fetchProductRequest} from "../Redux/Reducers/productReducer/productActions"
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import Ratings from "../Ratings/index"

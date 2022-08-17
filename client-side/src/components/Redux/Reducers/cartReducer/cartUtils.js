@@ -7,6 +7,16 @@ export const selectCartItems =createSelector(
     cartData=>cartData.cartItems
 )
 
+export const selectPaymentMethod=createSelector(
+    [selectCartData],
+    cartData=>cartData.paymentMethod
+)
+
+export const selectShippingAddress=createSelector(
+    [selectCartData],
+    cartData=>cartData.shippingAddress   
+)
+
 
 export const selectCartItemCount =createSelector(
     [selectCartItems],

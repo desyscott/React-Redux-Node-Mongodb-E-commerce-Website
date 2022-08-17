@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link, Redirect, useHistory } from "react-router-dom";
 import axios from "axios";
+import {useDispatch} from "react-redux"
+import {signOut} from "../components/Redux/Reducers/userReducer/userActions"
 
 const Home = () => {
      const history = useHistory();
+     const dispatch=useDispatch()
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -14,11 +17,11 @@ const Home = () => {
         setUsers(data.userList);
         
         if (data === "there is no token") {
-          history.replace("/login");
+          history.replace("/signin");
         }
         
         if (data.error) {
-          history.replace("/login");
+          history.replace("/signin");
         }
         
       })
@@ -29,16 +32,7 @@ const Home = () => {
 
              
   const handleSignOut = () => {
-    axios
-      .get("/api/auth/logout")
-      .then((res) => {
-        const data = res.data;
-        console.log(data);
-        history.replace("/signin");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+   dispatch(signOut())
   };
 
   return (

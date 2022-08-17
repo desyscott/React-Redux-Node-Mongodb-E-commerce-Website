@@ -39,3 +39,13 @@ export const removeCartItem=(productId)=>async(dispatch,getState)=>{
     //updating the local storage 
     localStorage.setItem("cartItems", JSON.stringify(getState().cartData.cartItems));
 }
+
+export const saveShippingAddress=(data)=>(dispatch)=>{
+    dispatch({type:cartTypes.SAVE_CART_SHIPPING_ADDRESS,payLoad:data})
+    localStorage.setItem("shippingAddress",JSON.stringify(data));
+    
+}
+
+export const savePaymentMethod=(data)=>(dispatch)=>{
+    dispatch({type:cartTypes.SAVE_CART_PAYMENT_METHOD,payLoad:data})
+}

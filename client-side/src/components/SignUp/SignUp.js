@@ -1,26 +1,36 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React,{useEffect,useRef} from "react";
+import { Link,useLocation } from "react-router-dom";
 import useForm from "./useForm";
 import "./signUp.css"
 
 function SignUp() {
+  const inputRef=useRef();
+  const location=useLocation();
+  
+  const redirect = location.search ? location.search.split("=")[1]:"/";
+  
+  useEffect(()=>{
+    inputRef.current.focus()
+  },[])
+  
   const { handleChange, values, handleSubmit, error, userVerificationMessage } =
     useForm();
+    
 
   return (
     <>
       <div>
         <form className="form" onSubmit={handleSubmit}>
           <h1>
-            Get Started with us today ! Create an account by filling out the
-            form below.
+           Create Account
           </h1>
           {userVerificationMessage.verifyMessage && (
             <p>{userVerificationMessage.verifyMessage}</p>
           )}
           <div>
-            <label for="username">Name</label>
+            <label htmlFor="username">Name</label>
             <input
+            ref={inputRef}
               type="text"
               id="name"
               name="name"
@@ -57,6 +67,20 @@ function SignUp() {
             />
           </div>
           {error.passwordError && <p>{error.passwordError}</p>}
+          
+          <div>
+            <label htmlFor="confirmPassword">Confirm password</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              id="confirmPassword"
+              placeholder="Enter confirm password"
+              required
+              value={values.confirmPassword}
+              onChange={handleChange}
+            />
+          </div>
+          
               
           <div>
           <label/>
@@ -66,7 +90,7 @@ function SignUp() {
            <label/>
             <div>
              Already have an account? {' '} 
-             <Link to="/signIn">Sign In</Link>
+             <Link to={`/signIn?redirect=${redirect}`}>Sign-In</Link>
             </div>
           </div>
         </form>

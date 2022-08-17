@@ -1,8 +1,9 @@
 import React from 'react'
+import "./index.css"
 
 const LoadingBox=()=>{
   return (
-    <div>
+    <div className="loading">
       <i className="fa fa-spinner fa-spin"/> Loading...
     </div>
   )

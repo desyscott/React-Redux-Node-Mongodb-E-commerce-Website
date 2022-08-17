@@ -21,7 +21,7 @@ import {data} from "../data/ProductData.js"
 
 
 const handleErrors = (err) => {
-  console.log(err.message, err.code);
+  console.log("handleErrors",err.message, err.code);
      let errors= {
     name: "",
     email: "",
@@ -73,8 +73,9 @@ router.get("/seed",asyncHandler(async(req,res)=>{
 }))
 
 
-router.post("/signup", async (req, res) => {
+router.post("/signup", asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
+  
   try {
     const user = await authModel.create({
       name,
@@ -111,17 +112,17 @@ router.post("/signup", async (req, res) => {
       <p>This link will expire in 1hour. If you have questions, <a>we’re here to help.</a></p>`,
     });
     
-    res.status(201).json({ user: user });
-    console.log(user)
+    res.status(200).json({user});
+    console.log("user",user)
     
   } catch (err) {
   const errors = handleErrors(err);
-    res.json({ errors });
+    res.send({errors});
   }
-});
+}));
 
 
-router.get("/email-verification/:userId/:verificationString", async (req, res) => {
+router.get("/email-verification/:userId/:verificationString", asyncHandler(async (req, res) => {
   const { userId, verificationString} = req.params;
   
   if (!userId || !verificationString)
@@ -157,7 +158,7 @@ router.get("/email-verification/:userId/:verificationString", async (req, res) =
 
   res.json("your email is verified");
   // console.log("your email is verified");
-});
+}));
 
 
 router.post("/signin",asyncHandler(async(req, res) => {
@@ -174,14 +175,10 @@ router.post("/signin",asyncHandler(async(req, res) => {
     const token = createToken(user._id);
     res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
     
-    res.status(200).send({ id:user._id,
-                           name:user.name,
-                           email:user.email,
-                           isAdmin:user.isAdmin,
-                           verified:user.verified});
+    res.status(200).send({user});
   } catch (err) {
     const errors = handleErrors(err);
-    res.json({ errors });
+    res.send({ errors });
   }
 }));
 

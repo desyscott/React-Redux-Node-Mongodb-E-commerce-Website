@@ -12,6 +12,9 @@ import Landing from "./Pages/Landing";
 import ProductDetails from "./Pages/ProductDetails";
 import Cart from "./Pages/Cart"
 import CartNotification from "./Pages/CartNotification"
+import ShippingAddress from "./Pages/ShippingAddress"
+import PaymentMethod from "./Pages/PaymentMethod";
+import PlaceOrder from "./Pages/PlaceOrder"
 
 const  App=()=> {
   return (
@@ -43,9 +46,11 @@ const  App=()=> {
             </MainLayout>
           )}/>
            
-
-          <Route path="/signUp" exact component={SignUp} />
           <Route path="/signIn" component={Login} />
+          <Route path="/signUp" exact component={SignUp} />
+          <Route path="/shipping" component={ShippingAddress}/>
+          <Route path="/payment" component={PaymentMethod}/>
+          <Route path="/place-order" component={PlaceOrder}/>
           <Route
             path="/email-verification/:userId/:verificationString"
             component={EmailVerified}

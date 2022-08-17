@@ -3,7 +3,9 @@ import cartTypes from "./cartTypes"
 import {handleAddToCart,handleRemoveFromCart} from "./cartHandler"
 
 const INITIAL_STATE={
-    cartItems:[]
+    cartItems:[],
+    shippingAddress:{},
+    
 }
 
 const addToCartReducer=(state=INITIAL_STATE,action)=>{
@@ -26,6 +28,20 @@ const addToCartReducer=(state=INITIAL_STATE,action)=>{
              cartItemToRemove:action.payLoad
          })
      };
+     
+     
+     case cartTypes.SAVE_CART_SHIPPING_ADDRESS:
+     return{
+         ...state,
+         shippingAddress:action.payLoad,
+     }
+     
+     case cartTypes.SAVE_CART_PAYMENT_METHOD:
+     return{
+         ...state,
+         paymentMethod:action.payLoad
+     }
+     
     default: return state
     }
     
